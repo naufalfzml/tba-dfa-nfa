@@ -6,7 +6,57 @@
     <link href="{{ url_for('static', filename='../static/output.css') }}" rel="stylesheet">
     <title>Tugas Kelompok Program TBA</title>
 </head>
-<body>
-    <h1 class="font-bold text-red-500">Tes hallo</h1>
+<body class="bg-gray-50 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6">
+    <h1 class="text-2xl font-bold mb-4">🎯 DFA Builder</h1>
+
+    <form method="POST" action="/" class="space-y-4">
+      <!-- States -->
+      <div>
+        <label class="block font-semibold mb-1">States (pisahkan dengan koma):</label>
+        <input name="states" type="text" placeholder="Contoh: A,B,C,D" required class="w-full border p-2 rounded">
+      </div>
+
+      <!-- Alphabet -->
+      <div>
+        <label class="block font-semibold mb-1">Alphabet (pisahkan dengan koma):</label>
+        <input name="alphabet" type="text" placeholder="Contoh: 0,1" required class="w-full border p-2 rounded">
+      </div>
+
+      <!-- Start State -->
+      <div>
+        <label class="block font-semibold mb-1">Start State:</label>
+        <input name="start_state" type="text" placeholder="Contoh: A" required class="w-full border p-2 rounded">
+      </div>
+
+      <!-- Final States -->
+      <div>
+        <label class="block font-semibold mb-1">Final States (pisahkan dengan koma):</label>
+        <input name="final_states" type="text" placeholder="Contoh: C,E,F" required class="w-full border p-2 rounded">
+      </div>
+
+      <!-- Transitions -->
+      <div>
+        <label class="block font-semibold mb-1">Transitions (satu per baris, format: state,symbol,target):</label>
+        <textarea name="transitions" rows="6" placeholder="Contoh: A,0,B\nA,1,F" required class="w-full border p-2 rounded"></textarea>
+      </div>
+
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Minimize DFA</button>
+    </form>
+
+    {% if result %}
+      <div class="mt-8">
+        <h2 class="text-xl font-semibold mb-2">✅ Hasil Minimasi</h2>
+        <pre class="bg-gray-100 p-4 rounded">{{ result.minimized | tojson(indent=2) }}</pre>
+        <img src="data:image/png;base64,{{ result.image_base64 }}" alt="DFA Diagram" class="mt-4 rounded border shadow">
+      </div>
+    {% endif %}
+
+    {% if error %}
+      <div class="mt-4 bg-red-100 text-red-700 p-4 rounded">
+        Error: {{ error }}
+      </div>
+    {% endif %}
+  </div>
 </body>
 </html>

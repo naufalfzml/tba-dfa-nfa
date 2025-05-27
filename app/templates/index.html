@@ -6,13 +6,36 @@
     <link href="{{ url_for('static', filename='../static/output.css') }}" rel="stylesheet">
     <title>Tugas Kelompok Program TBA</title>
 </head>
-<body>
-    <div class="flex flex-col items-center justify-center">
-    <h1 class="font-bold text-red-500">Program Teori Bahasa dan Automata</h1>
-    <button type="submit" onclick="">Tes DFA</button>
-    <button type="submit" onclick="">Tes DFA</button>
-    <button class="rounded-[20px] bg-gray-500 p-2 border-2 border-red-500" type="submit" onclick="">Minimization DFA</button>
-    <button type="submit" onclick="">Tes DFA</button>
-    </div>
+<body class="bg-gradient-to-br from-indigo-100 to-white min-h-screen flex flex-col items-center justify-center font-sans">
+  <header class="mb-12 text-center">
+    <h1 class="text-4xl font-bold text-indigo-700">DFA & NFA Program</h1>
+    <p class="text-gray-600 mt-2">Aplikasi web untuk mempermudah simulasi DFA & NFA!</p>
+  </header>
+
+  <main class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full px-6">
+    <a href="/tes-dfa" class="bg-white shadow-md rounded-2xl p-6 transition-transform duration-300 ease-in-out transform hover:scale-110 hover:bg-indigo-50 border border-gray-200">
+      <h2 class="text-xl font-semibold text-indigo-800 mb-2">Tes DFA</h2>
+      <p class="text-gray-600">Uji apakah string diterima oleh DFA tertentu.</p>
+    </a>
+
+    <a href="/minimization" class="bg-white shadow-md rounded-2xl p-6 transition-transform duration-300 ease-in-out transform hover:scale-110 hover:bg-indigo-50 border border-gray-200">
+      <h2 class="text-xl font-semibold text-indigo-800 mb-2">Minimization</h2>
+      <p class="text-gray-600">Minimalkan DFA menjadi bentuk yang paling sederhana.</p>
+    </a>
+
+    <a href="/regex-to-nfa" class="bg-white shadow-md rounded-2xl p-6 transition-transform duration-300 ease-in-out transform hover:scale-110 hover:bg-indigo-50 border border-gray-200">
+      <h2 class="text-xl font-semibold text-indigo-800 mb-2">Convert Regex to NFA</h2>
+      <p class="text-gray-600">Konversi regular expression ke dalam bentuk NFA.</p>
+    </a>
+
+    <a href="/dfa-equivalence" class="bg-white shadow-md rounded-2xl p-6 transition-transform duration-300 ease-in-out transform hover:scale-110 hover:bg-indigo-50 border border-gray-200">
+      <h2 class="text-xl font-semibold text-indigo-800 mb-2">DFA Equivalence</h2>
+      <p class="text-gray-600">Bandingkan dua DFA untuk melihat apakah mereka ekuivalen.</p>
+    </a>
+  </main>
+
+  <footer class="mt-16 text-gray-500 text-sm">
+    &copy; 2025 DFA & NFA Tools by Kelompok 5 Kelas B
+  </footer>
 </body>
 </html>
