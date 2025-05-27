@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request
 from app.logic.regex_to_nfa import RegexToNFA
+from app.logic.minimization_dfa import DFA
+from app.logic.minimization_dfa import build_and_minimize_dfa
 
 main = Blueprint('main', __name__)
 
@@ -13,7 +15,7 @@ def tes_dfa():
 
 @main.route('/minimization', methods=['GET', 'POST'])
 def minimization():
-    if request.method == "POST":
+    if request.method == 'POST':
         try:
             states = set(s.strip() for s in request.form["states"].split(","))
             alphabet = set(a.strip() for a in request.form["alphabet"].split(","))
@@ -28,12 +30,20 @@ def minimization():
                     state, symbol, target = parts
                     transitions[(state, symbol)] = target
 
-            result = build_and_minimize_dfa_from_form(states, alphabet, start_state, final_states, transitions)
+            input_data = {
+                "states": list(states),
+                "alphabet": list(alphabet),
+                "start_state": start_state,
+                "final_states": list(final_states),
+                "transitions": {f"{k[0]},{k[1]}": v for k, v in transitions.items()}
+            }
+
+            result = build_and_minimize_dfa(input_data)
             return render_template("minimization.html", result=result)
         except Exception as e:
             return render_template("minimization.html", error=str(e))
 
-    return render_template("index.html")
+    return render_template("minimization.html")
 
 @main.route('/regex-to-nfa', methods=['GET', 'POST'])
 def regex_to_nfaview():
