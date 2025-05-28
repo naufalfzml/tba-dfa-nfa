@@ -32,31 +32,45 @@ def tes_dfa():
 def minimization():
     if request.method == 'POST':
         try:
-            states = set(s.strip() for s in request.form["states"].split(","))
-            alphabet = set(a.strip() for a in request.form["alphabet"].split(","))
+            # Parsing input dengan pembersihan yang lebih baik
+            states = [s.strip() for s in request.form["states"].split(",") if s.strip()]
+            alphabet = [a.strip() for a in request.form["alphabet"].split(",") if a.strip()]
             start_state = request.form["start_state"].strip()
-            final_states = set(s.strip() for s in request.form["final_states"].split(","))
+            final_states = [s.strip() for s in request.form["final_states"].split(",") if s.strip()]
             raw_transitions = request.form["transitions"].strip().splitlines()
 
             transitions = {}
             for line in raw_transitions:
-                parts = [p.strip() for p in line.split(",")]
-                if len(parts) == 3:
-                    state, symbol, target = parts
-                    transitions[(state, symbol)] = target
+                line = line.strip()
+                if not line:
+                    continue
+
+                # Pisahkan berdasarkan koma dan hapus spasi ekstra
+                parts = [x.strip() for x in line.split(',')]
+                
+                if len(parts) >= 3:
+                    state = parts[0].strip()
+                    symbol = parts[1].strip()
+                    target = parts[2].strip()
+                    transitions[f"{state},{symbol}"] = target
+                else:
+                    # Skip baris yang formatnya salah
+                    continue
 
             input_data = {
-                "states": list(states),
-                "alphabet": list(alphabet),
+                "states": states,
+                "alphabet": alphabet,
                 "start_state": start_state,
-                "final_states": list(final_states),
-                "transitions": {f"{k[0]},{k[1]}": v for k, v in transitions.items()}
+                "final_states": final_states,
+                "transitions": transitions
             }
 
             result = build_and_minimize_dfa(input_data)
             return render_template("minimization.html", result=result)
+            
         except Exception as e:
-            return render_template("minimization.html", error=str(e))
+            error_msg = str(e)
+            return render_template("minimization.html", error=error_msg)
 
     return render_template("minimization.html")
 
