@@ -6,7 +6,69 @@
     <link href="{{ url_for('static', filename='../static/output.css') }}" rel="stylesheet">
     <title>Tugas Kelompok Program TBA</title>
 </head>
-<body>
-    <h1 class="font-bold text-red-500">Tes hallo</h1>
+<body class="bg-gray-50 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6">
+    <h1 class="text-2xl font-bold mb-4">DFA String Tester</h1>
+
+    <form method="POST" class="space-y-4">
+        <div class="flex flex-col">
+            <label class="font-semibold mb-1">States</label>
+            <input class="border p-2" name="states" placeholder="q0 q1">
+        </div>
+
+        <div class="flex flex-col">
+            <label class="font-semibold mb-1">Alphabet</label>
+            <input class="border p-2" name="alphabet" placeholder="0 1">
+        </div>
+
+        <div class="flex flex-col">
+            <label class="font-semibold mb-1">Start State</label>
+            <input class="border p-2" name="start_state" placeholder="q0">
+        </div>
+
+        <div class="flex flex-col">
+            <label class="font-semibold mb-1">Accept States</label>
+            <input class="border p-2" name="accept_states" placeholder="q1">
+        </div>
+
+        <div class="flex flex-col">
+            <label class="font-semibold mb-1">Transitions</label>
+            <input class="border p-2" name="transitions" placeholder="q0 0 q1, q1 1 q1">
+        </div>
+
+        <div class="flex flex-col">
+            <label class="font-semibold mb-1">Test String</label>
+            <input class="border p-2" name="test_string" placeholder="01">
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Submit</button>
+    </form>
+
+    {% if result %}
+    <div class="mt-6">
+        <table class="w-full text-left border-collapse border border-blue-300 rounded-md overflow-hidden">
+            <thead class="bg-blue-100">
+                <tr>
+                    <th class="border border-blue-300 px-4 py-2">From State</th>
+                    <th class="border border-blue-300 px-4 py-2">Symbol</th>
+                    <th class="border border-blue-300 px-4 py-2">To State</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for symbol, from_state, to_state in steps %}
+                    <tr class="hover:bg-blue-50 text-center">
+                        <td class="border border-blue-300 px-4 py-2">{{ from_state }}</td>
+                        <td class="border border-blue-300 px-4 py-2">{{ symbol }}</td>
+                        <td class="border border-blue-300 px-4 py-2">{{ to_state if to_state else "ERROR" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p class="mt-4 font-bold text-lg {{ 'text-red-500' if result == 'Rejected' else 'text-indigo-700' }}">
+        Hasil: {{ result }}
+        </p>
+    </div>
+{% endif %}
 </body>
 </html>
