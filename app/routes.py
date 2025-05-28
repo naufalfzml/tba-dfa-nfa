@@ -3,6 +3,7 @@ from app.logic.tes_dfa import run_dfa
 from app.logic.regex_to_nfa import RegexToNFA
 from app.logic.minimization_dfa import DFA
 from app.logic.minimization_dfa import build_and_minimize_dfa
+from app.logic.tes_equivalen import parse_dfa, are_equivalent
 
 main = Blueprint('main', __name__)
 
@@ -92,4 +93,33 @@ def regex_to_nfaview():
                          test_string=test_string,
                          test_result=test_result,
                          test_path=test_path)
+
+@main.route('/equivalence', methods=['POST'])
+def check_equivalence():
+    try:
+        # Ambil data dari form
+        states1 = request.form["states1"]
+        symbols1 = request.form["symbols1"]
+        start1 = request.form["start1"]
+        finals1 = request.form["final1"]
+        transitions1 = request.form["transitions1"]
+
+        states2 = request.form["states2"]
+        symbols2 = request.form["symbols2"]
+        start2 = request.form["start2"]
+        finals2 = request.form["final2"]
+        transitions2 = request.form["transitions2"]
+
+        # Parsing kedua DFA
+        dfa1 = parse_dfa(states1, symbols1, start1, finals1, transitions1)
+        dfa2 = parse_dfa(states2, symbols2, start2, finals2, transitions2)
+
+        # Cek ekivalensi
+        equivalent = are_equivalent(dfa1, dfa2)
+        result = "Kedua DFA adalah ekuivalen." if equivalent else "Kedua DFA **tidak** ekuivalen."
+
+        return render_template("equivalence.html", result=result)
+    
+    except Exception as e:
+        return render_template("equivalence.html", error=str(e))
 
