@@ -108,7 +108,6 @@ def regex_to_nfaview():
                          test_result=test_result,
                          test_path=test_path)
 
-@main.route('/equivalent', methods=['GET','POST'])
 @main.route('/equivalence', methods=['GET', 'POST'])
 def check_equivalence():
     try:
