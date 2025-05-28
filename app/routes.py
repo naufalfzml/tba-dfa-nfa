@@ -108,7 +108,7 @@ def regex_to_nfaview():
                          test_result=test_result,
                          test_path=test_path)
 
-@main.route('/equivalence', methods=['POST'])
+@main.route('/equivalence', methods=['GET', 'POST'])
 def check_equivalence():
     try:
         # Ambil data dari form
@@ -132,8 +132,8 @@ def check_equivalence():
         equivalent = are_equivalent(dfa1, dfa2)
         result = "Kedua DFA adalah ekuivalen." if equivalent else "Kedua DFA **tidak** ekuivalen."
 
-        return render_template("equivalence.html", result=result)
+        return render_template("equivalent.html", result=result)
     
     except Exception as e:
-        return render_template("equivalence.html", error=str(e))
+        return render_template("equivalent.html", error=str(e))
 
