@@ -136,4 +136,3 @@ def check_equivalence():
     
     except Exception as e:
         return render_template("equivalent.html", error=str(e))
-
