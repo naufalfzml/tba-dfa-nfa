@@ -15,9 +15,13 @@
             <form method="POST" class="space-y-4">
                 <div>
                     <label for="regex" class="block font-semibold mb-1">Regular Expression:</label>
-                    <input type="text" id="regex" name="regex" placeholder="Contoh: a*b, a|b, (a|b)*" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="regex" name="regex" value="{{ regex }}" placeholder="Contoh: a*b, a|b, (a|b)*" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Convert</button>
+                <div>
+                    <label for="test_string" class="block font-semibold mb-1">Test String:</label>
+                    <input type="text" id="test_string" name="test_string" value="{{ test_string }}" placeholder="Masukkan string untuk diuji" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Convert & Test</button>
             </form>
 
             <div class="mt-6">
@@ -34,6 +38,43 @@
         {% if error %}
             <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
                 Error: {{ error }}
+            </div>
+        {% endif %}
+
+        {% if test_result is not none and test_string %}
+            <div class="bg-white rounded-xl shadow p-6 mb-6">
+                <h2 class="text-2xl font-bold mb-4">Hasil Pengujian String</h2>
+                <div class="mb-4">
+                    <p class="font-semibold">String yang diuji: <span class="font-mono">{{ test_string }}</span></p>
+                    <p class="mt-2">
+                        Status: 
+                        {% if test_result %}
+                            <span class="text-green-600 font-semibold">Diterima ✓</span>
+                        {% else %}
+                            <span class="text-red-600 font-semibold">Ditolak ✗</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                {% if test_path %}
+                    <div>
+                        <h3 class="font-semibold mb-2">Langkah-langkah Pengujian:</h3>
+                        <div class="space-y-2">
+                            {% for step in test_path %}
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <p>
+                                        <span class="font-medium">Input:</span> 
+                                        <span class="font-mono">{{ step.symbol }}</span>
+                                    </p>
+                                    <p>
+                                        <span class="font-medium">States:</span> 
+                                        <span class="font-mono">{{ step.states|join(', ') }}</span>
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
 

@@ -49,10 +49,32 @@ def minimization():
 def regex_to_nfaview():
     nfa_description = None
     regex_input = ""
+    test_result = None
+    test_path = None
+    test_string = ""
+    
     if request.method == 'POST':
         regex_input = request.form.get('regex', '')
+        test_string = request.form.get('test_string', '')
         converter = RegexToNFA()
         nfa = converter.regex_to_nfa(regex_input)
         nfa_description = converter.get_nfa_description(nfa)
-    return render_template('regex_to_nfa.html', nfa=nfa_description, regex=regex_input)
+        
+        if test_string:
+            is_accepted, path = nfa.test_string(test_string)
+            test_result = is_accepted
+            test_path = []
+            for states, symbol in path:
+                state_names = [state.name for state in states]
+                test_path.append({
+                    'states': state_names,
+                    'symbol': symbol if symbol is not None else 'ε'
+                })
+    
+    return render_template('regex_to_nfa.html', 
+                         nfa=nfa_description, 
+                         regex=regex_input,
+                         test_string=test_string,
+                         test_result=test_result,
+                         test_path=test_path)
 

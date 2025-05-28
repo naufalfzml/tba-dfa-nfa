@@ -26,6 +26,52 @@ class NFA:
         if symbol != '&':  # epsilon represented as '&'
             self.alphabet.add(symbol)
 
+    def epsilon_closure(self, states):
+        """Get epsilon closure of a set of states"""
+        closure = set(states)
+        stack = list(states)
+        
+        while stack:
+            state = stack.pop()
+            if '&' in state.transitions:  # epsilon transitions
+                for next_state in state.transitions['&']:
+                    if next_state not in closure:
+                        closure.add(next_state)
+                        stack.append(next_state)
+        return closure
+
+    def test_string(self, input_string):
+        """Test if a string is accepted by the NFA"""
+        if not self.initial_state:
+            return False, []
+            
+        # Start with epsilon closure of initial state
+        current_states = self.epsilon_closure([self.initial_state])
+        path = [(list(current_states), None)]  # [(states, input_symbol)]
+        
+        # Process each input symbol
+        for symbol in input_string:
+            if symbol not in self.alphabet:
+                return False, path
+                
+            # Get next states for current symbol
+            next_states = set()
+            for state in current_states:
+                if symbol in state.transitions:
+                    next_states.update(state.transitions[symbol])
+            
+            # Add epsilon closure of next states
+            next_states = self.epsilon_closure(next_states)
+            if not next_states:  # If no valid transitions
+                return False, path
+                
+            current_states = next_states
+            path.append((list(current_states), symbol))
+        
+        # Check if any current state is final
+        is_accepted = any(state in self.final_states for state in current_states)
+        return is_accepted, path
+
 class RegexToNFA:
     def __init__(self):
         self.operators = {'|', '*', '(', ')'}
