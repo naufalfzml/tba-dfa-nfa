@@ -110,19 +110,29 @@ def regex_to_nfaview():
 
 @main.route('/equivalence', methods=['GET', 'POST'])
 def check_equivalence():
+    # Jika request adalah GET, tampilkan form kosong
+    if request.method == 'GET':
+        return render_template("equivalent.html")
+    
+    # Jika request adalah POST, proses form
     try:
         # Ambil data dari form
-        states1 = request.form["states1"]
-        symbols1 = request.form["symbols1"]
-        start1 = request.form["start1"]
-        finals1 = request.form["final1"]
-        transitions1 = request.form["transitions1"]
+        states1 = request.form.get("states1", "")
+        symbols1 = request.form.get("symbols1", "")
+        start1 = request.form.get("start1", "")
+        finals1 = request.form.get("final1", "")
+        transitions1 = request.form.get("transitions1", "")
 
-        states2 = request.form["states2"]
-        symbols2 = request.form["symbols2"]
-        start2 = request.form["start2"]
-        finals2 = request.form["final2"]
-        transitions2 = request.form["transitions2"]
+        states2 = request.form.get("states2", "")
+        symbols2 = request.form.get("symbols2", "")
+        start2 = request.form.get("start2", "")
+        finals2 = request.form.get("final2", "")
+        transitions2 = request.form.get("transitions2", "")
+
+        # Validasi input tidak kosong
+        if not all([states1, symbols1, start1, finals1, transitions1, 
+                   states2, symbols2, start2, finals2, transitions2]):
+            raise ValueError("Semua field harus diisi")
 
         # Parsing kedua DFA
         dfa1 = parse_dfa(states1, symbols1, start1, finals1, transitions1)
@@ -135,4 +145,4 @@ def check_equivalence():
         return render_template("equivalent.html", result=result)
     
     except Exception as e:
-        return render_template("equivalent.html", error=str(e))
+        return render_template("equivalent.html", error=f"Error: {str(e)}")
