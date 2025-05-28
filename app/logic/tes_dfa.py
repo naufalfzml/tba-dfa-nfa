@@ -1,6 +1,6 @@
 def parse_transitions(transition_input):
     transition_dict = {}
-    transitions = transition_input.split(',')
+    transitions = transition_input.strip().splitlines()
     for t in transitions:
         parts = t.strip().split()
         if len(parts) == 3:
