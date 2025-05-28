@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+from app.logic.tes_dfa import run_dfa
 from app.logic.regex_to_nfa import RegexToNFA
 from app.logic.minimization_dfa import DFA
 from app.logic.minimization_dfa import build_and_minimize_dfa
@@ -9,9 +10,23 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
-@main.route('/tes-dfa')
+@main.route('/tes-dfa', methods=["GET", "POST"])
 def tes_dfa():
-    return render_template('tes_dfa.html')
+    output = None
+    result_steps = []
+    
+    if request.method == "POST":
+        states = request.form["states"].split()
+        alphabet = request.form["alphabet"].split()
+        start_state = request.form["start_state"]
+        accept_states = request.form["accept_states"].split()
+        transitions_input = request.form["transitions"]
+        test_string = request.form["test_string"]
+
+        result_steps, accepted = run_dfa(states, alphabet, start_state, accept_states, transitions_input, test_string)
+        output = "Accepted" if accepted else "Rejected"
+
+    return render_template("tes_dfa.html", result=output, steps=result_steps)
 
 @main.route('/minimization', methods=['GET', 'POST'])
 def minimization():
