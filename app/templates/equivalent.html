@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="{{ url_for('static', filename='../static/output.css') }}" rel="stylesheet" />
-  <title>Cek Ekivalensi DFA</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ url_for('static', filename='../static/output.css') }}" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='image.png') }}" type="image/x-icon">
+    <title>Equivalence of Two DFAs</title>
 </head>
 <body class="bg-gray-50 min-h-screen p-6">
   <div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6">
@@ -46,6 +47,7 @@
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
           Cek Ekivalensi
         </button>
+        <button class="bg-blue-600 text-white rounded-md hover:bg-blue-700 px-4 py-2 mt-6" onclick="window.history.back()">Back</button>
       </div>
     </form>
 
