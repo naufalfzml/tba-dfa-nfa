@@ -1,6 +1,6 @@
 def parse_transitions(transition_input):
     transition_dict = {}
-    transitions = transition_input.strip().splitlines()
+    transitions = transition_input.split(',')
     for t in transitions:
         parts = t.strip().split()
         if len(parts) == 3:
@@ -12,18 +12,14 @@ def run_dfa(states, alphabet, start_state, accept_states, transitions_input, tes
     result = []
     transitions = parse_transitions(transitions_input)
     current_state = start_state
-    rejected_due_to_error = False
 
     for symbol in test_string:
         key = (current_state, symbol)
         next_state = transitions.get(key)
         result.append((symbol, current_state, next_state))
-
         if next_state is None:
-            rejected_due_to_error = True
-            break 
-
+            break
         current_state = next_state
 
-    accepted = not rejected_due_to_error and current_state in accept_states
+    accepted = current_state in accept_states
     return result, accepted

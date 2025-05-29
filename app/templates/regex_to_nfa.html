@@ -7,123 +7,123 @@
   <link rel="icon" href="{{ url_for('static', filename='image.png') }}" type="image/x-icon">
   <title>Regex to NFA Converter</title>
 </head>
-<body class="bg-gradient-to-br from-indigo-100 to-white min-h-screen font-sans text-gray-800">
+<body class="bg-gray-100 font-sans text-gray-800">
 
-  <div class="max-w-3xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-center text-indigo-700 mb-8">Regex to NFA Converter</h1>
+    <div class="max-w-3xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-700 mb-8">Regex to NFA Converter</h1>
 
-    <div class="bg-white rounded-2xl shadow-md p-6 mb-6 border border-gray-200">
-      <form method="POST" class="space-y-4">
-        <div>
-          <label for="regex" class="block font-semibold text-indigo-800 mb-1">Regular Expression:</label>
-          <input type="text" id="regex" name="regex" value="{{ regex }}" placeholder="Contoh: a*b, a|b, (a|b)*" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div>
-          <label for="test_string" class="block font-semibold text-indigo-800 mb-1">Test String:</label>
-          <input type="text" id="test_string" name="test_string" value="{{ test_string }}" placeholder="Masukkan string untuk diuji" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Convert & Test</button>
-      </form>
-
-      <div class="mt-6">
-        <h4 class="font-semibold text-indigo-800 mb-2">Contoh regex:</h4>
-        <ul class="list-disc list-inside text-sm text-gray-600">
-          <li><code>a*b</code> - nol atau lebih 'a' diikuti 'b'</li>
-          <li><code>a|b</code> - 'a' atau 'b'</li>
-          <li><code>(a|b)*</code> - kombinasi 'a' dan 'b'</li>
-        </ul>
-      </div>
-      <button class="bg-blue-600 text-white rounded-md hover:bg-blue-700 px-4 py-2 mt-6" onclick="window.history.back()">Back</button>
-    </div>
-
-    {% if error %}
-      <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
-        Error: {{ error }}
-      </div>
-    {% endif %}
-
-    {% if test_result is not none and test_string %}
-      <div class="bg-white rounded-2xl shadow-md p-6 mb-6 border border-gray-200">
-        <h2 class="text-2xl font-bold text-indigo-800 mb-4">Hasil Pengujian String</h2>
-        <div class="mb-4">
-          <p class="font-semibold">String yang diuji: <span class="font-mono">{{ test_string }}</span></p>
-          <p class="mt-2">
-            Status:
-            {% if test_result %}
-              <span class="text-green-600 font-semibold">Diterima ✓</span>
-            {% else %}
-              <span class="text-red-600 font-semibold">Ditolak ✗</span>
-            {% endif %}
-          </p>
-        </div>
-
-        {% if test_path %}
-          <div>
-            <h3 class="font-semibold text-indigo-800 mb-2">Langkah-langkah Pengujian:</h3>
-            <div class="space-y-2">
-              {% for step in test_path %}
-                <div class="bg-gray-50 p-3 rounded">
-                  <p>
-                    <span class="font-medium">Input:</span>
-                    <span class="font-mono">{{ step.symbol }}</span>
-                  </p>
-                  <p>
-                    <span class="font-medium">States:</span>
-                    <span class="font-mono">{{ step.states|join(', ') }}</span>
-                  </p>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endif %}
-      </div>
-    {% endif %}
-
-    {% if nfa %}
-      <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-200">
-        <h2 class="text-2xl font-bold text-indigo-800 mb-4">Hasil NFA</h2>
-
-        <div class="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <h3 class="font-semibold text-indigo-800">States:</h3>
-            <p>{{ nfa.states|join(', ') }}</p>
-          </div>
-          <div>
-            <h3 class="font-semibold text-indigo-800">Alphabet:</h3>
-            <p>{{ nfa.alphabet|join(', ') }}</p>
-          </div>
-          <div>
-            <h3 class="font-semibold text-indigo-800">Initial State:</h3>
-            <p>{{ nfa.initial_state }}</p>
-          </div>
-          <div>
-            <h3 class="font-semibold text-indigo-800">Final States:</h3>
-            <p>{{ nfa.final_states|join(', ') }}</p>
-          </div>
-        </div>
-
-        <div>
-          <h3 class="font-semibold text-indigo-800 mb-2">Transisi:</h3>
-          <div class="space-y-4">
-            {% for from_state, trans in nfa.transitions.items() %}
-              {% if trans %}
+        <div class="bg-white rounded-xl shadow p-6 mb-6">
+            <form method="POST" class="space-y-4">
                 <div>
-                  <h4 class="font-medium">Dari {{ from_state }}:</h4>
-                  <ul class="list-disc list-inside ml-4 text-sm text-gray-600">
-                    {% for symbol, to_states in trans.items() %}
-                      <li>
-                        {{ symbol if symbol != '&' else 'ε' }} → {{ to_states|join(', ') }}
-                      </li>
-                    {% endfor %}
-                  </ul>
+                    <label for="regex" class="block font-semibold mb-1">Regular Expression:</label>
+                    <input type="text" id="regex" name="regex" value="{{ regex }}" placeholder="Contoh: a*b, a|b, (a|b)*" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-              {% endif %}
-            {% endfor %}
-          </div>
+                <div>
+                    <label for="test_string" class="block font-semibold mb-1">Test String:</label>
+                    <input type="text" id="test_string" name="test_string" value="{{ test_string }}" placeholder="Masukkan string untuk diuji" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Convert & Test</button>
+            </form>
+
+            <div class="mt-6">
+                <h4 class="font-semibold mb-2">Contoh regex:</h4>
+                <ul class="list-disc list-inside text-sm text-gray-600">
+                    <li><code>a*b</code> - nol atau lebih 'a' diikuti 'b'</li>
+                    <li><code>a|b</code> - 'a' atau 'b'</li>
+                    <li><code>(a|b)*</code> - kombinasi 'a' dan 'b'</li>
+                </ul>
+            </div>
+            <button class="bg-blue-600 text-white rounded-md hover:bg-blue-700 px-4 py-2 mt-6" onclick="window.history.back()">Back</button>
         </div>
-      </div>
-    {% endif %}
-  </div>
+
+        {% if error %}
+            <div class="bg-red-100 text-red-700 p-4 rounded mb-6">
+                Error: {{ error }}
+            </div>
+        {% endif %}
+
+        {% if test_result is not none and test_string %}
+            <div class="bg-white rounded-xl shadow p-6 mb-6">
+                <h2 class="text-2xl font-bold mb-4">Hasil Pengujian String</h2>
+                <div class="mb-4">
+                    <p class="font-semibold">String yang diuji: <span class="font-mono">{{ test_string }}</span></p>
+                    <p class="mt-2">
+                        Status: 
+                        {% if test_result %}
+                            <span class="text-green-600 font-semibold">Diterima ✓</span>
+                        {% else %}
+                            <span class="text-red-600 font-semibold">Ditolak ✗</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                {% if test_path %}
+                    <div>
+                        <h3 class="font-semibold mb-2">Langkah-langkah Pengujian:</h3>
+                        <div class="space-y-2">
+                            {% for step in test_path %}
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <p>
+                                        <span class="font-medium">Input:</span> 
+                                        <span class="font-mono">{{ step.symbol }}</span>
+                                    </p>
+                                    <p>
+                                        <span class="font-medium">States:</span> 
+                                        <span class="font-mono">{{ step.states|join(', ') }}</span>
+                                    </p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if nfa %}
+            <div class="bg-white rounded-xl shadow p-6">
+                <h2 class="text-2xl font-bold mb-4">Hasil NFA</h2>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <h3 class="font-semibold">States:</h3>
+                        <p>{{ nfa.states|join(', ') }}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">Alphabet:</h3>
+                        <p>{{ nfa.alphabet|join(', ') }}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">Initial State:</h3>
+                        <p>{{ nfa.initial_state }}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold">Final States:</h3>
+                        <p>{{ nfa.final_states|join(', ') }}</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold mb-2">Transisi:</h3>
+                    <div class="space-y-4">
+                        {% for from_state, trans in nfa.transitions.items() %}
+                            {% if trans %}
+                                <div>
+                                    <h4 class="font-medium">Dari {{ from_state }}:</h4>
+                                    <ul class="list-disc list-inside ml-4 text-sm">
+                                        {% for symbol, to_states in trans.items() %}
+                                            <li>
+                                                {{ symbol if symbol != '&' else 'ε' }} → {{ to_states|join(', ') }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 
 </body>
 </html>
