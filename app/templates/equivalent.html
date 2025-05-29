@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ url_for('static', filename='../static/output.css') }}" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='image.png') }}" type="image/x-icon">
-    <title>Equivalence of Two DFAs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="{{ url_for('static', filename='../static/output.css') }}" rel="stylesheet" />
+  <title>Cek Ekivalensi DFA</title>
 </head>
 <body class="bg-gray-50 min-h-screen p-6">
   <div class="max-w-4xl mx-auto bg-white shadow-md rounded p-6">
@@ -56,5 +55,11 @@
     <div class="mt-6 text-center text-green-600 font-semibold">
       {{ result }}
     </div>
+    {% elif error %}
+    <div class="mt-6 text-center text-red-600 font-semibold">
+      {{ error }}
+    </div>
+    {% endif %}
+  </div>
 </body>
 </html>
