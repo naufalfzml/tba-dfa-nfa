@@ -54,22 +54,24 @@ def regex_to_nfaview():
     test_string = ""
     
     if request.method == 'POST':
-        regex_input = request.form.get('regex', '')
-        test_string = request.form.get('test_string', '')
-        converter = RegexToNFA()
-        nfa = converter.regex_to_nfa(regex_input)
-        nfa_description = converter.get_nfa_description(nfa)
-        
-        if test_string:
-            is_accepted, path = nfa.test_string(test_string)
-            test_result = is_accepted
-            test_path = []
-            for states, symbol in path:
-                state_names = [state.name for state in states]
-                test_path.append({
-                    'states': state_names,
-                    'symbol': symbol if symbol is not None else 'ε'
-                })
+        try:
+            regex_input = request.form.get('regex', '')
+            test_string = request.form.get('test_string', '')
+            converter = RegexToNFA()
+            nfa = converter.regex_to_nfa(regex_input)
+            nfa_description = converter.get_nfa_description(nfa)
+            
+            if test_string:
+                is_accepted, path = nfa.test_string(test_string)
+                test_result = is_accepted
+                test_path = []
+                for states, symbol in path:
+                    test_path.append({
+                        'states': states,  # states sudah dalam bentuk list of strings
+                        'symbol': symbol if symbol is not None else 'ε'
+                    })
+        except Exception as e:
+            return render_template('regex_to_nfa.html', error=str(e))
     
     return render_template('regex_to_nfa.html', 
                          nfa=nfa_description, 
