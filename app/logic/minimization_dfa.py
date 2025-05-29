@@ -22,44 +22,64 @@ class DFA:
         return None
 
     def minimize(self):
-        non_final = self.states - self.final_states
-        partitions = [self.final_states, non_final]
+        final_states_set = self.final_states & self.states
+        non_final_states_set = self.states - self.final_states
+        
+        partitions = []
+        if final_states_set:
+            partitions.append(final_states_set)
+        if non_final_states_set:
+            partitions.append(non_final_states_set)
 
         while True:
             new_partitions = []
             for group in partitions:
                 grouped = defaultdict(set)
+                
                 for state in group:
-                    signature = tuple(
-                        self.get_partition_index(self.transition(state, symbol), partitions)
-                        for symbol in self.alphabet
-                    )
+                    signature = []
+                    for symbol in sorted(self.alphabet):  
+                        next_state = self.transition(state, symbol)
+                        partition_idx = self.get_partition_index(next_state, partitions) if next_state else -1
+                        signature.append(partition_idx)
+                    signature = tuple(signature)
                     grouped[signature].add(state)
+                
                 new_partitions.extend(grouped.values())
-            if new_partitions == partitions:
+            
+            if len(new_partitions) == len(partitions) and all(
+                any(new_group == old_group for old_group in partitions) 
+                for new_group in new_partitions
+            ):
                 break
             partitions = new_partitions
 
-        minimized_states = {frozenset(p): f'Q{i}' for i, p in enumerate(partitions)}
+        minimized_states = {}
+        for i, partition in enumerate(partitions):
+            state_name = f'Q{i}'
+            minimized_states[frozenset(partition)] = state_name
+
         minimized_transitions = {}
         minimized_final_states = set()
         minimized_start_state = None
 
-        for group in partitions:
-            representative = next(iter(group))
-            group_name = minimized_states[frozenset(group)]
+        for partition in partitions:
+            representative = next(iter(partition))
+            group_name = minimized_states[frozenset(partition)]
 
-            if representative in self.final_states:
+            if any(state in self.final_states for state in partition):
                 minimized_final_states.add(group_name)
-            if self.start_state in group:
+            
+            if self.start_state in partition:
                 minimized_start_state = group_name
 
             for symbol in self.alphabet:
                 target = self.transition(representative, symbol)
                 if target is not None:
-                    for g in partitions:
-                        if target in g:
-                            target_group_name = minimized_states[frozenset(g)]
+                    # Cari partisi yang mengandung target state
+                    for target_partition in partitions:
+                        if target in target_partition:
+                            target_group_name = minimized_states[frozenset(target_partition)]
                             minimized_transitions[(group_name, symbol)] = target_group_name
                             break
 
@@ -93,7 +113,6 @@ class DFA:
         plt.text(pos[self.start_state][0] - 0.15, pos[self.start_state][1] + 0.1, "→", fontsize=20, color='green')
         plt.axis('off')
 
-        # Simpan ke base64
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         plt.close()
@@ -102,12 +121,22 @@ class DFA:
         return img_base64
 
     def to_dict(self):
+        transitions_display = []
+        for (state, symbol), target in self.transitions.items():
+            transitions_display.append({
+                "from_state": state,
+                "symbol": symbol, 
+                "to_state": target,
+                "display": f'("{state}", "{symbol}") → {target}'
+            })
+        
         return {
             "states": list(self.states),
             "alphabet": list(self.alphabet),
             "start_state": self.start_state,
             "final_states": list(self.final_states),
-            "transitions": {f"{k[0]},{k[1]}": v for k, v in self.transitions.items()}
+            "transitions": transitions_display,
+            "transitions_raw": {f"{state},{symbol}": target for (state, symbol), target in self.transitions.items()}
         }
 
 

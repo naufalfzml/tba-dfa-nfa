@@ -45,9 +45,26 @@ Q0,1,Q1"
     </form>
 
     {% if result %}
-      <div class="mt-8">
-        <h2 class="text-xl font-semibold mb-2">✅ Hasil Minimasi</h2>
-        <pre class="bg-gray-100 p-4 rounded">{{ result.minimized | tojson(indent=2) }}</pre>
+        <div class="bg-blue-50 p-4 rounded mb-4">
+          <h3 class="font-semibold mb-2">DFA Information:</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p><strong>States:</strong> {{ result.minimized.states | join(', ') }}</p>
+              <p><strong>Alphabet:</strong> {{ result.minimized.alphabet | join(', ') }}</p>
+              <p><strong>Start State:</strong> {{ result.minimized.start_state }}</p>
+              <p><strong>Final States:</strong> {{ result.minimized.final_states | join(', ') }}</p>
+            </div>
+            <div>
+            <p><strong>Transitions:</strong></p>
+            <ul class="list-disc list-inside">
+              {% for trans, target in result.minimized.transitions_raw.items() %}
+                <li>{{ trans }} → {{ target }}</li>
+              {% endfor %}
+            </ul>
+            </div>
+          </div>
+        </div>
+
         <img src="data:image/png;base64,{{ result.image_base64 }}" alt="DFA Diagram" class="mt-4 rounded border shadow">
       </div>
     {% endif %}
