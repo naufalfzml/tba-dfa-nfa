@@ -1,7 +1,7 @@
 class State:
     def __init__(self, name):
         self.name = name
-        self.transitions = {}  # {symbol: [states]}
+        self.transitions = {}  
         self.is_final = False
 
 class NFA:
@@ -23,17 +23,16 @@ class NFA:
             from_state.transitions[symbol] = []
         if to_state not in from_state.transitions[symbol]:
             from_state.transitions[symbol].append(to_state)
-        if symbol != '&':  # epsilon represented as '&'
+        if symbol != '&':  # epsilon menggunakan '&'
             self.alphabet.add(symbol)
 
     def epsilon_closure(self, states):
-        """Get epsilon closure of a set of states"""
         closure = set(states)
         stack = list(states)
         
         while stack:
             state = stack.pop()
-            if '&' in state.transitions:  # epsilon transitions
+            if '&' in state.transitions:  
                 for next_state in state.transitions['&']:
                     if next_state not in closure:
                         closure.add(next_state)
@@ -41,49 +40,41 @@ class NFA:
         return closure
 
     def test_string(self, input_string):
-        """Test if a string is accepted by the NFA"""
         if not self.initial_state:
             return False, []
             
-        # Start with epsilon closure of initial state
         current_states = self.epsilon_closure([self.initial_state])
-        path = [(list(current_states), None)]  # [(states, input_symbol)]
+        path = [(list(current_states), None)]  
         
-        # Process each input symbol
         for symbol in input_string:
             if symbol not in self.alphabet:
                 return False, path
                 
-            # Get next states for current symbol
             next_states = set()
             for state in current_states:
                 if symbol in state.transitions:
                     next_states.update(state.transitions[symbol])
             
-            # Add epsilon closure of next states
             next_states = self.epsilon_closure(next_states)
-            if not next_states:  # If no valid transitions
+            if not next_states: 
                 return False, path
                 
             current_states = next_states
             path.append((list(current_states), symbol))
         
-        # Check if any current state is final
         is_accepted = any(state in self.final_states for state in current_states)
         return is_accepted, path
 
 class RegexToNFA:
     def __init__(self):
         self.operators = {'|', '*', '(', ')'}
-        self.epsilon = '&'  # Using & as epsilon symbol
+        self.epsilon = '&' # & sbg epsilon
 
     def create_basic_nfa(self, symbol):
-        """Create NFA for a single symbol"""
         nfa = NFA()
         start = nfa.create_state()
         end = nfa.create_state()
         end.is_final = True
-        
         nfa.initial_state = start
         nfa.final_states = [end]
         nfa.add_transition(start, end, symbol)
@@ -91,7 +82,6 @@ class RegexToNFA:
         return nfa
 
     def concatenate(self, nfa1, nfa2):
-        """Concatenate two NFAs"""
         result = NFA()
         result.states = nfa1.states + nfa2.states
         result.alphabet = nfa1.alphabet.union(nfa2.alphabet)
@@ -99,7 +89,6 @@ class RegexToNFA:
         result.final_states = nfa2.final_states
         result.state_counter = max(nfa1.state_counter, nfa2.state_counter)
 
-        # Connect final states of nfa1 to initial state of nfa2 with epsilon
         for final_state in nfa1.final_states:
             final_state.is_final = False
             result.add_transition(final_state, nfa2.initial_state, self.epsilon)
@@ -107,7 +96,6 @@ class RegexToNFA:
         return result
 
     def union(self, nfa1, nfa2):
-        """Create union of two NFAs"""
         result = NFA()
         start = result.create_state()
         end = result.create_state()
@@ -118,11 +106,9 @@ class RegexToNFA:
         result.initial_state = start
         result.final_states = [end]
 
-        # Connect new start state to both NFAs' start states
         result.add_transition(start, nfa1.initial_state, self.epsilon)
         result.add_transition(start, nfa2.initial_state, self.epsilon)
 
-        # Connect both NFAs' final states to new final state
         for final_state in nfa1.final_states + nfa2.final_states:
             final_state.is_final = False
             result.add_transition(final_state, end, self.epsilon)
@@ -130,7 +116,6 @@ class RegexToNFA:
         return result
 
     def kleene_star(self, nfa):
-        """Apply Kleene star operation to NFA"""
         result = NFA()
         start = result.create_state()
         end = result.create_state()
@@ -141,13 +126,10 @@ class RegexToNFA:
         result.initial_state = start
         result.final_states = [end]
 
-        # Connect start to end with epsilon (for empty string)
         result.add_transition(start, end, self.epsilon)
         
-        # Connect start to nfa's start
         result.add_transition(start, nfa.initial_state, self.epsilon)
         
-        # Connect nfa's final states to nfa's start (for repetition)
         for final_state in nfa.final_states:
             final_state.is_final = False
             result.add_transition(final_state, end, self.epsilon)
@@ -156,12 +138,10 @@ class RegexToNFA:
         return result
 
     def infix_to_postfix(self, regex):
-        """Convert infix regex to postfix notation"""
         precedence = {'*': 3, '.': 2, '|': 1}
         stack = []
         output = []
         
-        # Add explicit concatenation operator '.'
         explicit_regex = []
         for i in range(len(regex)):
             explicit_regex.append(regex[i])
@@ -177,7 +157,7 @@ class RegexToNFA:
             elif char == ')':
                 while stack and stack[-1] != '(':
                     output.append(stack.pop())
-                stack.pop()  # Remove '('
+                stack.pop()  
             else:
                 while (stack and stack[-1] != '(' and 
                        precedence.get(stack[-1], 0) >= precedence.get(char, 0)):
@@ -190,9 +170,7 @@ class RegexToNFA:
         return output
 
     def regex_to_nfa(self, regex):
-        """Convert regex to NFA"""
         if not regex:
-            # Create NFA that accepts empty string
             nfa = NFA()
             start = nfa.create_state()
             end = nfa.create_state()
@@ -223,7 +201,6 @@ class RegexToNFA:
         return stack[0]
 
     def get_nfa_description(self, nfa):
-        """Get a readable description of the NFA"""
         description = {
             'states': [state.name for state in nfa.states],
             'alphabet': list(nfa.alphabet),
