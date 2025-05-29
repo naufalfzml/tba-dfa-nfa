@@ -90,4 +90,4 @@ def are_equivalent(dfa1, dfa2):
             # Tambahkan pasangan state baru ke queue
             if (t1, t2) not in visited:
                 queue.append((t1, t2))
-        return True
+    return True

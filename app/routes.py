@@ -138,7 +138,7 @@ def check_equivalence():
 
         # Cek ekivalensi
         equivalent = are_equivalent(dfa1, dfa2)
-        result = "Kedua DFA adalah ekuivalen." if equivalent else "Kedua DFA **tidak** ekuivalen."
+        result = "Kedua DFA adalah ekuivalen." if equivalent else "Kedua DFA tidak ekuivalen."
 
         return render_template("equivalent.html", result=result)
     
