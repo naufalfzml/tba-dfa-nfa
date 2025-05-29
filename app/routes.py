@@ -33,7 +33,6 @@ def tes_dfa():
 def minimization():
     if request.method == 'POST':
         try:
-            # Parsing input dengan pembersihan yang lebih baik
             states = [s.strip() for s in request.form["states"].split(",") if s.strip()]
             alphabet = [a.strip() for a in request.form["alphabet"].split(",") if a.strip()]
             start_state = request.form["start_state"].strip()
@@ -46,7 +45,6 @@ def minimization():
                 if not line:
                     continue
 
-                # Pisahkan berdasarkan koma dan hapus spasi ekstra
                 parts = [x.strip() for x in line.split(',')]
                 
                 if len(parts) >= 3:
@@ -55,7 +53,6 @@ def minimization():
                     target = parts[2].strip()
                     transitions[f"{state},{symbol}"] = target
                 else:
-                    # Skip baris yang formatnya salah
                     continue
 
             input_data = {
