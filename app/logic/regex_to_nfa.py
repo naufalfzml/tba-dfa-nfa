@@ -143,18 +143,13 @@ class RegexToNFA:
         result.initial_state = start
         result.final_states = [end]
 
-        # Transisi untuk string kosong
         result.add_transition(start, end, self.epsilon)
         
-        # Transisi ke NFA asli
         result.add_transition(start, nfa.initial_state, self.epsilon)
         
-        # Transisi dari final states
         for final_state in nfa.final_states:
             final_state.is_final = False
-            # Ke end state
             result.add_transition(final_state, end, self.epsilon)
-            # Kembali ke initial state untuk repetisi
             result.add_transition(final_state, nfa.initial_state, self.epsilon)
 
         return result
@@ -206,39 +201,25 @@ class RegexToNFA:
             nfa.add_transition(start, end, self.epsilon)
             return nfa
 
-        # Khusus untuk pattern a*ab, kita buat implementasi khusus
         if regex == "a*ab":
             nfa = NFA()
-            
-            # Buat states
-            q0 = nfa.create_state()  # initial state
-            q1 = nfa.create_state()  # state untuk loop a*
-            q2 = nfa.create_state()  # state setelah a
-            q3 = nfa.create_state()  # final state setelah b
-            
-            # Set initial dan final state
+            q0 = nfa.create_state() 
+            q1 = nfa.create_state()  
+            q2 = nfa.create_state()  
+            q3 = nfa.create_state()  
             nfa.initial_state = q0
             nfa.final_states = [q3]
             q3.is_final = True
-            
-            # Tambahkan transisi
-            # Untuk a*
-            nfa.add_transition(q0, q1, 'a')  # a* bisa digunakan
-            nfa.add_transition(q1, q1, 'a')  # loop untuk a*
-            
-            # Untuk ab
-            nfa.add_transition(q0, q2, 'a')  # a dalam ab
-            nfa.add_transition(q2, q3, 'b')  # b dalam ab
-            
-            # Tambahkan epsilon transition dari q1 ke q2
+            nfa.add_transition(q0, q1, 'a') 
+            nfa.add_transition(q1, q1, 'a') 
+            nfa.add_transition(q0, q2, 'a') 
+            nfa.add_transition(q2, q3, 'b')  
             nfa.add_transition(q1, q2, self.epsilon)
             
             return nfa
 
-        # Untuk pattern lainnya, gunakan implementasi yang ada
         postfix = self.infix_to_postfix(regex)
         stack = []
-
         for char in postfix:
             if char not in self.operators and char != '.':
                 stack.append(self.create_basic_nfa(char))
